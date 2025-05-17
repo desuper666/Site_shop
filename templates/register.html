@@ -1,0 +1,20 @@
+
+{% extends 'base.html' %}
+{% block content %}
+    <h1 class="text-3xl font-bold mb-6">{{ t.register }}</h1>
+    <form method="POST" class="max-w-md">
+        <div class="mb-4">
+            <label for="username" class="block text-gray-700 dark:text-gray-300">{{ t.username }}</label>
+            <input type="text" name="username" id="username" class="w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required>
+        </div>
+        <div class="mb-4">
+            <label for="email" class="block text-gray-700 dark:text-gray-300">{{ t.email }}</label>
+            <input type="email" name="email" id="email" class="w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required>
+        </div>
+        <div class="mb-4">
+            <label for="password" class="block text-gray-700 dark:text-gray-300">{{ t.password }}</label>
+            <input type="password" name="password" id="password" class="w-full border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100" required>
+        </div>
+        <button type="submit" class="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-700 dark:hover:bg-blue-600">{{ t.register }}</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,24 @@
+
+{% extends 'base.html' %}
+{% block content %}
+    <div class="flex flex-col md:flex-row gap-6">
+        <div class="relative w-full md:w-2/3 h-96 flex items-center justify-center">
+            <img src="{{ url_for('static', filename='images/' + product.image) if product.image and product.image in ['Baggy_Jeans.jpg', 'Baggy_pants.jpg', 'Bandana_T-shirt.jpg', 'Black_T-shirt.jpg', 'BLG_T-shirt.jpg', 'Blue_T-shirt.jpg', 'Cargo_pants.jpg', 'Fashion_boots.jpg', 'Fashion_sneakers.jpg', 'Fashion_t-shirt.jpg', 'Fashionable_T-shirt.jpg', 'Glitter_t-shirt.jpg', 'Gray_sweater.jpg', 'Green_T-shirt.jpg', 'Jeans1.jpg', 'jungle_t-shirt.jpg', 'polo.jpg', 'Red_sneakers.jpg', 'Running_sneakers.jpg', 'Spotted_pants.jpg', 'Sweater.jpg', 'Torn_bt-shirt.jpg', 'Torn_t-shirt.jpg', 'trousers.jpg', 'T-shirt.jpg', 'T-shirt_w_print.jpg', 'turquoise_t-shirt.jpg', 'W_T-shirt.jpg', 'White_boots.jpg'] else 'https://via.placeholder.com/300' }}" alt="{{ product.name_en if lang == 'en' else product.name_ru }}" class="max-h-full max-w-full object-contain rounded">
+        </div>
+        <div>
+            <h1 class="text-3xl font-bold mb-4">{{ product.name_en if lang == 'en' else product.name_ru }}</h1>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">{{ product.description_en if lang == 'en' else product.description_ru }}</p>
+            <p class="text-2xl font-bold mb-4">${{ "%.2f" % product.price }}</p>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">{{ t.stock.format(product.stock) }}</p>
+            {% if product.stock > 0 %}
+                <form method="POST" action="{{ url_for('add_to_cart', product_id=product.id) }}">
+                    <label for="quantity" class="block text-gray-700 dark:text-gray-300 mb-2">{{ t.quantity }}</label>
+                    <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ product.stock }}" class="w-20 border rounded px-3 py-2 mb-4 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+                    <button type="submit" class="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-700 dark:hover:bg-blue-600">{{ t.add_to_cart }}</button>
+                </form>
+            {% else %}
+                <p class="text-red-600 dark:text-red-400">{{ t.out_of_stock }}</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

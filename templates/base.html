@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ t.title }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        };
+    </script>
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        if (
+            savedTheme === 'dark' ||
+            (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        ) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <nav class="bg-blue-600 dark:bg-blue-800 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="{{ url_for('index') }}" class="text-2xl font-bold">{{ t.title }}</a>
+            <div class="flex items-center space-x-4">
+                {% if session.username %}
+                    <span class="mr-4">{{ t.welcome.format(session.username) }}</span>
+                    <a href="{{ url_for('cart') }}" class="mr-4 px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded">{{ t.cart }}</a>
+                    <a href="{{ url_for('orders') }}" class="mr-4 px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded">{{ t.orders }}</a>
+                    <a href="{{ url_for('logout') }}" class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded">{{ t.logout }}</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="mr-4 px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded">{{ t.login }}</a>
+                    <a href="{{ url_for('register') }}" class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded">{{ t.register }}</a>
+                {% endif %}
+                <a href="{{ url_for('set_language', lang='ru' if lang == 'en' else 'en') }}"
+                   class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded">
+                   {{ t.language }}
+                </a>
+                <button id="theme-toggle"
+                        onclick="toggleTheme()"
+                        class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded">
+                    ☀️
+                </button>
+            </div>
+        </div>
+    </nav>
+    <div class="container mx-auto p-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="bg-{{ 'green' if category == 'success' else 'red' }}-100 dark:bg-{{ 'green' if category == 'success' else 'red' }}-900 border-{{ 'green' if category == 'success' else 'red' }}-400 dark:border-{{ 'green' if category == 'success' else 'red' }}-600 text-{{ 'green' if category == 'success' else 'red' }}-700 dark:text-{{ 'green' if category == 'success' else 'red' }}-300 px-4 py-3 rounded mb-4">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+    <div class="fixed bottom-4 right-4">
+        <button id="easter-egg-button" class="text-gray-100 dark:text-gray-800 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300">
+            {{ 'Secret' if lang == 'en' else 'Секрет' }}
+        </button>
+    </div>
+    <div id="easter-egg-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white dark:bg-gray-700 p-6 rounded-lg shadow-lg text-center max-w-sm">
+            <h2 class="text-2xl font-bold mb-4">{{ 'You Found the Secret!' if lang == 'en' else 'Вы нашли секрет!' }}</h2>
+            <p class="text-lg mb-4">{{ 'Use code <strong>EASTER20</strong> for a surprise!' if lang == 'en' else 'Используйте код ROMANOVLEXA25 для сюрприза!' }}</p>
+            <div class="flex justify-center mb-4">
+                <img src="{{ url_for('static', filename='images/lexa.jpg') if 'lexa.jpg' else 'https://via.placeholder.com/100' }}" alt="T-shirt" class="w-24 h-24 animate-spin-slow">
+            </div>
+            <button onclick="closeEasterEgg()" class="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-700 dark:hover:bg-blue-600">
+                {{ 'Close' if lang == 'en' else 'Закрыть' }}
+            </button>
+        </div>
+    </div>
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const btn = document.getElementById('theme-toggle');
+            const isDark = !html.classList.contains('dark');
+            html.classList.toggle('dark', isDark);
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            btn.textContent = isDark ? '🌙' : '☀️';
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM loaded, initializing Easter Egg');
+            const html = document.documentElement;
+            const btn = document.getElementById('theme-toggle');
+            if (btn) {
+                const isDark = html.classList.contains('dark');
+                btn.textContent = isDark ? '🌙' : '☀️';
+            }
+            const easterButton = document.getElementById('easter-egg-button');
+            if (easterButton) {
+                console.log('Easter Egg button found');
+                easterButton.addEventListener('click', () => {
+                    console.log('Easter Egg button clicked, showing modal');
+                    const modal = document.getElementById('easter-egg-modal');
+                    if (modal) {
+                        modal.classList.remove('hidden');
+                    } else {
+                        console.error('Easter Egg modal not found');
+                    }
+                });
+            } else {
+                console.error('Easter Egg button not found');
+            }
+        });
+        function closeEasterEgg() {
+            const modal = document.getElementById('easter-egg-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+            } else {
+                console.error('Easter Egg modal not found when trying to close');
+            }
+        }
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .animate-spin-slow {
+                animation: spin 3s linear infinite;
+            }
+            @keyframes spin {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+
+{% extends 'base.html' %}
+{% block content %}
+    <h1 class="text-3xl font-bold mb-6">{{ t.your_orders }}</h1>
+    {% if orders %}
+        <div class="bg-white dark:bg-gray-700 rounded-lg shadow-md p-4">
+            {% for order in orders %}
+                <div class="border-b py-4">
+                    <h2 class="text-xl font-semibold">Заказ #{{ order.id }} - {{ order.date.strftime('%Y-%m-%d %H:%M') }}</h2>
+                    <p class="text-gray-600 dark:text-gray-300">{{ t.total }}: ${{ "%.2f" % order.total }}</p>
+                    <p class="text-gray-600 dark:text-gray-300">{{ t.delivery_address }}: {{ order.delivery_address }}</p>
+                    {% if order.discount_applied %}
+                        <p class="text-green-600 dark:text-green-400">{{ t.discount }}: -${{ "%.2f" % order.discount_applied }}</p>
+                    {% endif %}
+                    <h3 class="text-lg font-semibold mt-2">{{ t.our_products }}</h3>
+                    {% for item in order.items %}
+                        <div class="flex items-center justify-between mt-2">
+                            <div>
+                                <p>{{ item.product.name_en if lang == 'en' else item.product.name_ru }} x {{ item.quantity }}</p>
+                                <p class="text-gray-600 dark:text-gray-300">${{ "%.2f" % item.price }} x {{ item.quantity }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>{{ t.no_orders }}</p>
+    {% endif %}
+{% endblock %}

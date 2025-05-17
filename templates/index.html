@@ -1,0 +1,19 @@
+
+{% extends 'base.html' %}
+{% block content %}
+    <h1 class="text-3xl font-bold mb-6">{{ t.our_products }}</h1>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        {% for product in products %}
+            <div class="bg-white dark:bg-gray-700 rounded-lg shadow-md p-4">
+                <div class="relative w-full h-64 flex items-center justify-center">
+                    <img src="{{ url_for('static', filename='images/' + product.image) if product.image else 'https://via.placeholder.com/150' }}" alt="{{ product.name_en if lang == 'en' else product.name_ru }}" class="max-h-full max-w-full object-contain rounded">
+                </div>
+                <h2 class="text-xl font-semibold mt-2">{{ product.name_en if lang == 'en' else product.name_ru }}</h2>
+                <p class="text-gray-600 dark:text-gray-300">{{ product.description_en if lang == 'en' else product.description_ru }}</p>
+                <p class="text-lg font-bold mt-2">${{ "%.2f" % product.price }}</p>
+                <p class="text-gray-600 dark:text-gray-300">{{ t.stock.format(product.stock) }}</p>
+                <a href="{{ url_for('product_detail', product_id=product.id) }}" class="mt-4 inline-block bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-700 dark:hover:bg-blue-600">{{ t.view_details }}</a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
