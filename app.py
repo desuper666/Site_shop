@@ -12,6 +12,7 @@ app.config['SECRET_KEY'] = 'your-secret-key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///clothing_store.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+app.config['DEBUG'] = True
 
 translations = {
     'en': {
@@ -859,5 +860,4 @@ for filename, content in templates.items():
 os.makedirs('static/images', exist_ok=True)
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 8888))
-    app.run(host='127.0.0.1', port=port)
+    app.run(host='0.0.0.0', port=8000)
