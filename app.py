@@ -859,5 +859,4 @@ for filename, content in templates.items():
 os.makedirs('static/images', exist_ok=True)
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 8888))
-    app.run(host='127.0.0.1', port=port)
+    app.run()
